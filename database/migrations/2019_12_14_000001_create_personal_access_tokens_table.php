@@ -10,20 +10,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('uuid')->unique();
+            $table->morphs('tokenable');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->foreignId('plan_id')->nullable()->constrained('plans')->cascadeOnDelete();
-            $table->rememberToken();
+            $table->string('token', 64)->unique();
+            $table->text('abilities')->nullable();
+            $table->timestamp('last_used_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('personal_access_tokens');
     }
 };
